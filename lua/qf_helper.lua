@@ -118,7 +118,7 @@ M.set_pos = function(qftype, pos)
   end, 10)
 end
 
-M.navigate = function(direction, opts)
+M.navigate = function(steps, opts)
   opts = vim.tbl_extend('keep', opts or {}, {
     qftype = nil, -- 'c' or 'l', otherwise we make a guess
     wrap = true, -- wrap at end or beginning of list
@@ -134,12 +134,12 @@ M.navigate = function(direction, opts)
     }
   end
 
-  local pos = util.get_pos(active_list.qftype) - 1 + direction
+  local pos = util.get_pos(active_list.qftype) - 1 + steps
   if opts.by_file then
-    if direction < 0 then
-      vim.cmd(string.format('silent! %dcpf', math.abs(direction)))
+    if steps < 0 then
+      vim.cmd(string.format('silent! %dcpf', math.abs(steps)))
     else
-      vim.cmd(string.format('silent! %dcnf', direction))
+      vim.cmd(string.format('silent! %dcnf', steps))
     end
   else
     if opts.wrap then

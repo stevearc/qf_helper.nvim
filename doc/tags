@@ -1,0 +1,11 @@
+qf_helper	qf_helper.txt	/*qf_helper*
+qf_helper-bindings	qf_helper.txt	/*qf_helper-bindings*
+qf_helper-configure	qf_helper.txt	/*qf_helper-configure*
+qf_helper-contents	qf_helper.txt	/*qf_helper-contents*
+qf_helper-functions	qf_helper.txt	/*qf_helper-functions*
+qf_helper.close()	qf_helper.txt	/*qf_helper.close()*
+qf_helper.navigate()	qf_helper.txt	/*qf_helper.navigate()*
+qf_helper.open()	qf_helper.txt	/*qf_helper.open()*
+qf_helper.setup()	qf_helper.txt	/*qf_helper.setup()*
+qf_helper.toggle()	qf_helper.txt	/*qf_helper.toggle()*
+qf_helper.txt	qf_helper.txt	/*qf_helper.txt*
