@@ -168,7 +168,7 @@ end
 M.maybe_autoclose = function()
   local qftype = util.get_win_type()
   local conf = config[qftype]
-  if vim.tbl_count(vim.api.nvim_list_wins()) == 1 and conf.autoclose then
+  if conf and vim.tbl_count(vim.api.nvim_list_wins()) == 1 and conf.autoclose then
     vim.cmd('quit')
   end
 end
