@@ -45,7 +45,8 @@ require'qf_helper'.setup({
     default_options = true,    -- Set recommended buffer and window options
     max_height = 10,           -- Max qf height when using open() or toggle()
     min_height = 1,            -- Min qf height when using open() or toggle()
-    track_location = true,     -- Keep qf updated with your current location
+    track_location = 'cursor', -- Keep qf updated with your current location
+                               -- Set to 'true' to sync the real qf index
   },
   loclist = {                  -- The same options, but for the loclist
     autoclose = true,
@@ -53,7 +54,7 @@ require'qf_helper'.setup({
     default_options = true,
     max_height = 10,
     min_height = 1,
-    track_location = true,
+    track_location = 'cursor',
   },
 })
 ```
@@ -69,6 +70,21 @@ nnoremap <silent> <C-P> <cmd>lua require'qf_helper'.navigate(-1)<CR>
 nnoremap <silent> <leader>q <cmd>lua require'qf_helper'.toggle('c')<CR>
 nnoremap <silent> <leader>l <cmd>lua require'qf_helper'.toggle('l')<CR>
 ```
+
+## Bindings
+When `default_bindings = true`, the following keybindings are set in the
+quickfix/loclist buffer:
+
+Key     | Command
+---     | -------
+`<C-t>` | open in a new tab
+`<C-s>` | open in a horizontal split
+`<C-v>` | open in a vertical split
+`<C-p>` | open the entry but keep the cursor in the quickfix window
+`<C-k>` | scroll up and open entry while keeping the cursor in the quickfix window
+`<C-j>` | scroll down and open entry while keeping the cursor in the quickfix window
+`{`     | scroll up to the previous file
+`}`     | scroll down to the next file
 
 ## FAQ
 

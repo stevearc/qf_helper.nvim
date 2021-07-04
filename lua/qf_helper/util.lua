@@ -14,13 +14,17 @@ M.get_win_type = function(winid)
 end
 
 M.is_open = function(qftype)
+  return M.get_win_info(qftype) ~= nil
+end
+
+M.get_win_info = function(qftype)
   local ll = qftype == 'l' and 1 or 0
   for _,info in ipairs(vim.fn.getwininfo()) do
     if info.quickfix == 1 and info.loclist == ll then
-      return true
+      return info
     end
   end
-  return false
+  return nil
 end
 
 M.get_active_list = function()

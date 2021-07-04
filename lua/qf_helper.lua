@@ -87,23 +87,30 @@ local _set_pos = function(qftype, pos)
   if pos < 1 then
     return
   end
-  local start_in_qf = util.get_win_type() == qftype
-  if start_in_qf then
-    -- If we're in the qf buffer, executing :cc will cause a nearby window to
-    -- jump to the qf location. In this case, we leave the qf window so we
-    -- *know* the window that jumps, so that we can restore its position
-    -- afterwards
-    vim.cmd('wincmd w')
-  end
-  local prev = vim.fn.winsaveview()
-  local bufnr = vim.api.nvim_get_current_buf()
+  local conf = config[qftype]
+  if conf.track_location == 'cursor' then
+    local info = util.get_win_info(qftype)
+    vim.api.nvim_win_set_cursor(info.winid, {pos, 0})
+    vim.api.nvim_win_set_option(info.winid, 'cursorline', true)
+  else
+    local start_in_qf = util.get_win_type() == qftype
+    if start_in_qf then
+      -- If we're in the qf buffer, executing :cc will cause a nearby window to
+      -- jump to the qf location. In this case, we leave the qf window so we
+      -- *know* the window that jumps, so that we can restore its position
+      -- afterwards
+      vim.cmd('wincmd w')
+    end
+    local prev = vim.fn.winsaveview()
+    local bufnr = vim.api.nvim_get_current_buf()
 
-  vim.cmd('keepjumps silent ' .. pos .. qftype .. qftype)
+    vim.cmd('keepjumps silent ' .. pos .. qftype .. qftype)
 
-  vim.api.nvim_set_current_buf(bufnr)
-  vim.fn.winrestview(prev)
-  if start_in_qf then
-    vim.cmd(qftype .. 'open')
+    vim.api.nvim_set_current_buf(bufnr)
+    vim.fn.winrestview(prev)
+    if start_in_qf then
+      vim.cmd(qftype .. 'open')
+    end
   end
 end
 M._debounce_idx = 0

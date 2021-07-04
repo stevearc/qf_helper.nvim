@@ -3,69 +3,7 @@
 ===============================================================================
 CONTENTS                                                     *qf_helper-contents*
 
-    1. Configure.......................................|qf_helper-intro|
-    2. Bindings.....................................|qf_helper-bindings|
-    3. Functions...................................|qf_helper-functions|
-
-===============================================================================
-CONFIGURE                                                   *qf_helper-configure*
-
-To get started with the default options (in lua)
-
-    require'qf_helper'.setup()
-
-Recommended keybindings
-
-    " use <C-N> and <C-P> for next/prev
-    nnoremap <silent> <C-N> <cmd>lua require'qf_helper'.navigate(1)<CR>
-    nnoremap <silent> <C-P> <cmd>lua require'qf_helper'.navigate(-1)<CR>
-    " toggle the quickfix open/closed without jumping to it
-    nnoremap <silent> <leader>q <cmd>lua require'qf_helper'.toggle('c')<CR>
-    nnoremap <silent> <leader>l <cmd>lua require'qf_helper'.toggle('l')<CR>
-
-To customize the default behavior
-
-    require'qf_helper'.setup({
-      -- Breaks ties for ambiguous |qf_helper.navigate()| command
-      prefer_loclist = true,
-
-      -- Sort diagnostic results from |lsp-diagnostic|. This is useful if you
-      -- want to use `track_location` below and your LSP server returns results
-      -- that are out-of-order.
-      sort_lsp_diagnostics = true,
-
-      quickfix = {
-        autoclose = true,          -- Autoclose qf if it's the only open window
-        default_bindings = true,   -- See |qf_helper-bindings|
-        default_options = true,    -- Set recommended buffer and window options
-        max_height = 10,           -- Max qf height when using open() or toggle()
-        min_height = 1,            -- Min qf height when using open() or toggle()
-        track_location = true,     -- Keep qf updated with your current location
-      },
-      loclist = {                  -- The same options, but for the loclist
-        autoclose = true,
-        default_bindings = true,
-        default_options = true,
-        max_height = 10,
-        min_height = 1,
-        track_location = true,
-      },
-    })
-
-===============================================================================
-BINDINGS                                                     *qf_helper-bindings*
-
-If `default_bindings` is `true`, the following keybindings are set in the
-quickfix/loclist buffer:
-
-<C-t> open in a new tab
-<C-s> open in a horizontal split
-<C-v> open in a vertical split
-<C-p> open the entry but keep the cursor in the quickfix window
-<C-k> scroll up and open entry while keeping the cursor in the quickfix window
-<C-j> scroll down and open entry while keeping the cursor in the quickfix window
-{     scroll up to the previous file
-}     scroll down to the next file
+    1. Functions...................................|qf_helper-functions|
 
 ===============================================================================
 FUNCTIONS                                                   *qf_helper-functions*
