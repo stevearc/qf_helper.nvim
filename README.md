@@ -1,11 +1,9 @@
 # qf_helper.nvim
-A collection of improvements for the quickfix buffer.
+A collection of improvements for neovim quickfix.
 
-**Goals:**
-* Be **small**. This is not a kitchen sink plugin.
-* Be **configurable**. It is easy to turn off or override any feature.
-* Provide **enhancements** for standard workflows involving quickfix. We don't want to *change* how you use quickfix, we want to make your current experience *better*.
-* **No new workflows**. Because we're not changing how you use quickfix. Other plugins can provide that functionality.
+The goal of this plugin is to be **small** and **unobtrusive**. It should make
+your normal quickfix workflows smoother, but it does not aim to *change* your
+workflows.
 
 ## Why another quickfix plugin?
 
@@ -13,8 +11,9 @@ Why not just use [vim-qf](https://github.com/romainl/vim-qf),
 [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf),
 [QFEnter](https://github.com/yssl/QFEnter), etc?
 
-I wanted two things that I could not find in any existing plugins:
-1. Update my position in the quickfix when I navigate
+Those are all great plugins, but I wanted two features that I could not find:
+
+1. Keep the quickfix location in sync with cursor location in the file
 2. Have one keybinding for next/prev that intelligently chooses between quickfix and loclist
 
 ![qf](https://user-images.githubusercontent.com/506791/122135288-0e910a00-cdf5-11eb-9273-2f68a2b23157.gif)
@@ -34,10 +33,13 @@ personal customizations you have. Configuration is done by calling `setup()`:
 ```lua
 -- Set up qf_helper with the default config
 require'qf_helper'.setup()
+```
 
--- Or you can customize the config
+That one line is all you need, but if you want to change some options you can
+pass them in like so:
+```lua
 require'qf_helper'.setup({
-  prefer_loclist = true,       -- For ambiguous navigation commands
+  prefer_loclist = true,       -- Used for QNext/QPrev (see Commands below)
   sort_lsp_diagnostics = true, -- Sort LSP diagnostic results
   quickfix = {
     autoclose = true,          -- Autoclose qf if it's the only open window
@@ -45,8 +47,8 @@ require'qf_helper'.setup({
     default_options = true,    -- Set recommended buffer and window options
     max_height = 10,           -- Max qf height when using open() or toggle()
     min_height = 1,            -- Min qf height when using open() or toggle()
-    track_location = 'cursor', -- Keep qf updated with your current location
-                               -- Set to 'true' to sync the real qf index
+    track_location = true,     -- Keep qf updated with your current location
+                               -- Set to 'cursor' to only change the qf cursor location
   },
   loclist = {                  -- The same options, but for the loclist
     autoclose = true,
@@ -54,22 +56,34 @@ require'qf_helper'.setup({
     default_options = true,
     max_height = 10,
     min_height = 1,
-    track_location = 'cursor',
+    track_location = true,
   },
 })
 ```
 
 I also recommend setting up some useful keybindings
 ```vim
-" use <C-N> and <C-P> for next/prev. Will intelligently infer if you want the
-" loclist or quickfix based on which has items and/or is open. If they both have
-" items and are both open/closed, will use the 'prefer_loclist' setup() option
-nnoremap <silent> <C-N> <cmd>lua require'qf_helper'.navigate(1)<CR>
-nnoremap <silent> <C-P> <cmd>lua require'qf_helper'.navigate(-1)<CR>
+" use <C-N> and <C-P> for next/prev.
+nnoremap <silent> <C-N> <cmd>QNext<CR>
+nnoremap <silent> <C-P> <cmd>QPrev<CR>
 " toggle the quickfix open/closed without jumping to it
-nnoremap <silent> <leader>q <cmd>lua require'qf_helper'.toggle('c')<CR>
-nnoremap <silent> <leader>l <cmd>lua require'qf_helper'.toggle('l')<CR>
+nnoremap <silent> <leader>q <cmd>QFToggle!<CR>
+nnoremap <silent> <leader>l <cmd>LLToggle!<CR>
 ```
+
+## Commands
+Command       | arg | description
+-------       | --- | -----------
+`QNext[!]`    | N=1 | Go to next quickfix or loclist entry, choosing based on which is non-empty and which is open. Uses `prefer_loclist` option to tiebreak.
+`QPrev[!]`    | N=1 | Go to previous quickfix or loclist entry, choosing based on which is non-empty and which is open. Uses `prefer_loclist` option to tiebreak.
+`QFNext[!]`   | N=1 | Same as `cnext`, but wraps at the end of the list
+`QFPrev[!]`   | N=1 | Same as `cprev`, but wraps at the beginning of the list
+`LLNext[!]`   | N=1 | Same as `lnext`, but wraps at the end of the list
+`LLPrev[!]`   | N=1 | Same as `lprev`, but wraps at the beginning of the list
+`QFOpen[!]`   |     | Same as `copen`, but dynamically sizes the window. With `[!]` cursor stays in current window.
+`LLOpen[!]`   |     | Same as `lopen`, but dynamically sizes the window. With `[!]` cursor stays in current window.
+`QFToggle[!]` |     | Open or close the quickfix window. With `[!]` cursor stays in current window.
+`LLToggle[!]` |     | Open or close the loclist window. With `[!]` cursor stays in current window.
 
 ## Bindings
 When `default_bindings = true`, the following keybindings are set in the

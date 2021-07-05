@@ -1,6 +1,15 @@
+:LLNext	qf_helper.txt	/*:LLNext*
+:LLOpen	qf_helper.txt	/*:LLOpen*
+:LLPrev	qf_helper.txt	/*:LLPrev*
+:LLToggle	qf_helper.txt	/*:LLToggle*
+:QFNext	qf_helper.txt	/*:QFNext*
+:QFOpen	qf_helper.txt	/*:QFOpen*
+:QFPrev	qf_helper.txt	/*:QFPrev*
+:QFToggle	qf_helper.txt	/*:QFToggle*
+:QNext	qf_helper.txt	/*:QNext*
+:QPrev	qf_helper.txt	/*:QPrev*
 qf_helper	qf_helper.txt	/*qf_helper*
-qf_helper-bindings	qf_helper.txt	/*qf_helper-bindings*
-qf_helper-configure	qf_helper.txt	/*qf_helper-configure*
+qf_helper-commads	qf_helper.txt	/*qf_helper-commads*
 qf_helper-contents	qf_helper.txt	/*qf_helper-contents*
 qf_helper-functions	qf_helper.txt	/*qf_helper-functions*
 qf_helper.close()	qf_helper.txt	/*qf_helper.close()*

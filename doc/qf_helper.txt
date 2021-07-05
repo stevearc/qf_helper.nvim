@@ -3,7 +3,55 @@
 ===============================================================================
 CONTENTS                                                     *qf_helper-contents*
 
+    1. Commands....................................|qf_helper-commands|
     1. Functions...................................|qf_helper-functions|
+
+===============================================================================
+COMMANDS                                                      *qf_helper-commads*
+
+                                                                         *:QNext*
+:[count]QNext[!]
+    Go to next quickfix or loclist entry, choosing based on which is non-empty
+    and which is open. Uses `prefer_loclist` option to tiebreak.
+
+                                                                         *:QPrev*
+:[count]QPrev[!]
+    Go to previous quickfix or loclist entry, choosing based on which is
+    non-empty and which is open. Uses `prefer_loclist` option to tiebreak.
+
+                                                                        *:QFNext*
+:[count]QFNext[!]
+    Same as |cnext|, but wraps at the end of the list
+
+                                                                        *:QFPrev*
+:[count]QFPrev[!]
+    Same as |cprev|, but wraps at the beginning of the list
+
+                                                                        *:LLNext*
+:[count]LLNext[!]
+    Same as |lnext|, but wraps at the end of the list
+
+                                                                        *:LLPrev*
+:[count]LLPrev[!]
+    Same as |lprev|, but wraps at the beginning of the list
+
+                                                                        *:QFOpen*
+:[count]QFOpen[!]
+    Same as |copen|, but dynamically sizes the window. With [!] cursor stays
+    in current window.
+
+                                                                        *:LLOpen*
+:[count]LLOpen[!]
+    Same as |lopen|, but dynamically sizes the window. With [!] cursor stays
+    in current window.
+
+                                                                      *:QFToggle*
+:[count]QFToggle[!]
+    Open or close the quickfix window. With [!] cursor stays in current window.
+
+                                                                      *:LLToggle*
+:[count]LLToggle[!]
+    Open or close the loclist window. With [!] cursor stays in current window.
 
 ===============================================================================
 FUNCTIONS                                                   *qf_helper-functions*
