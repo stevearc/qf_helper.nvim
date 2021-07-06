@@ -119,10 +119,10 @@ local _set_pos = function(qftype, pos)
 end
 M._debounce_idx = 0
 M.set_pos = function(qftype, pos)
+  M._debounce_idx = M._debounce_idx + 1
   if util.get_pos(qftype) == pos then
     return
   end
-  M._debounce_idx = M._debounce_idx + 1
   local idx = M._debounce_idx
   vim.defer_fn(function()
     if idx == M._debounce_idx then
