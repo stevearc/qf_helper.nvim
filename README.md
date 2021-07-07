@@ -16,14 +16,15 @@ Those are all great plugins, but I wanted two features that I could not find:
 1. Keep the quickfix location in sync with cursor location in the file
 2. Have one keybinding for next/prev that intelligently chooses between quickfix and loclist
 
-![qf](https://user-images.githubusercontent.com/506791/122135288-0e910a00-cdf5-11eb-9273-2f68a2b23157.gif)
+https://user-images.githubusercontent.com/506791/124833569-3de9f100-df33-11eb-9e3e-7b956c821cce.mp4
+
 *position tracking in action*
 
 ## Installation
 
 It's a standard neovim plugin. Follow your plugin manager's instructions.
 
-Need a plugin manager? Try [pathogen](https://github.com/tpope/vim-pathogen), [packer.nvim](https://github.com/wbthomason/packer.nvim), [vim-packager](https://github.com/kristijanhusak/vim-packager), [dein](https://github.com/Shougo/dein.vim), or [Vundle](https://github.com/VundleVim/Vundle.vim)
+Need a plugin manager? Try [pathogen](https://github.com/tpope/vim-pathogen), [paq](https://github.com/savq/paq-nvim), [packer.nvim](https://github.com/wbthomason/packer.nvim), [vim-packager](https://github.com/kristijanhusak/vim-packager), [dein](https://github.com/Shougo/dein.vim), [vim-plug](https://github.com/junegunn/vim-plug), or [Vundle](https://github.com/VundleVim/Vundle.vim)
 
 ## Configuration
 
