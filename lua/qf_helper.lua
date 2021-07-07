@@ -45,47 +45,6 @@ M.setup = function(opts)
   vim.cmd(autocmd)
 end
 
-M.open = function(qftype, opts)
-  opts = vim.tbl_extend("keep", opts or {}, {
-    enter = false, -- enter the qf window after opening
-    height = nil, -- explicitly override the height
-  })
-  local list = util.get_list(qftype)
-  if util.is_open(qftype) then
-    if opts.enter and util.get_win_type() ~= qftype then
-      M.set_pos(qftype, util.calculate_pos(qftype, list))
-      vim.cmd(qftype .. "open")
-    end
-    return
-  end
-  local conf = config[qftype]
-  if not opts.height then
-    opts.height = math.min(conf.max_height, math.max(conf.min_height, vim.tbl_count(list)))
-  end
-  M.set_pos(qftype, util.calculate_pos(qftype, list))
-  local winid = vim.api.nvim_get_current_win()
-  local cmd = qftype .. "open " .. opts.height
-  if qftype == "c" then
-    cmd = "botright " .. cmd
-  end
-  vim.cmd(cmd)
-  if not opts.enter then
-    vim.api.nvim_set_current_win(winid)
-  end
-end
-
-M.toggle = function(qftype, opts)
-  if util.is_open(qftype) then
-    M.close(qftype)
-  else
-    M.open(qftype, opts)
-  end
-end
-
-M.close = function(qftype)
-  vim.cmd(qftype .. "close")
-end
-
 -- pos is 1-indexed, like nr in the quickfix
 local _set_pos = function(qftype, pos)
   if pos < 1 then
@@ -117,18 +76,59 @@ local _set_pos = function(qftype, pos)
     end
   end
 end
-M._debounce_idx = 0
+local debounce_idx = 0
 M.set_pos = function(qftype, pos)
-  M._debounce_idx = M._debounce_idx + 1
+  debounce_idx = debounce_idx + 1
   if util.get_pos(qftype) == pos then
     return
   end
-  local idx = M._debounce_idx
+  local idx = debounce_idx
   vim.defer_fn(function()
-    if idx == M._debounce_idx then
+    if idx == debounce_idx then
       _set_pos(qftype, pos)
     end
   end, 10)
+end
+
+M.open = function(qftype, opts)
+  opts = vim.tbl_extend("keep", opts or {}, {
+    enter = false, -- enter the qf window after opening
+    height = nil, -- explicitly override the height
+  })
+  local list = util.get_list(qftype)
+  if util.is_open(qftype) then
+    if opts.enter and util.get_win_type() ~= qftype then
+      _set_pos(qftype, util.calculate_pos(qftype, list))
+      vim.cmd(qftype .. "open")
+    end
+    return
+  end
+  local conf = config[qftype]
+  if not opts.height then
+    opts.height = math.min(conf.max_height, math.max(conf.min_height, vim.tbl_count(list)))
+  end
+  _set_pos(qftype, util.calculate_pos(qftype, list))
+  local winid = vim.api.nvim_get_current_win()
+  local cmd = qftype .. "open " .. opts.height
+  if qftype == "c" then
+    cmd = "botright " .. cmd
+  end
+  vim.cmd(cmd)
+  if not opts.enter then
+    vim.api.nvim_set_current_win(winid)
+  end
+end
+
+M.toggle = function(qftype, opts)
+  if util.is_open(qftype) then
+    M.close(qftype)
+  else
+    M.open(qftype, opts)
+  end
+end
+
+M.close = function(qftype)
+  vim.cmd(qftype .. "close")
 end
 
 M.navigate = function(steps, opts)
