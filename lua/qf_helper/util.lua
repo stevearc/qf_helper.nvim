@@ -82,9 +82,14 @@ M.calculate_pos = function(qftype, list)
   local prev_col = -1
   local prev_bufnr = -1
   local ret = -1
+  local seen_bufs = {}
   for i, entry in ipairs(list) do
     -- If we detect that the list isn't sorted, bail.
     if entry.bufnr ~= prev_bufnr then
+      if seen_bufs[entry.bufnr] then
+        return -1
+      end
+      seen_bufs[entry.bufnr] = true
       prev_lnum = -1
       prev_col = -1
     elseif entry.lnum < prev_lnum then
