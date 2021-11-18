@@ -205,6 +205,13 @@ M._set_qf_defaults = function()
   local qftype = util.get_win_type()
   local conf = config[qftype]
 
+  vim.cmd(
+    [[command! -buffer -range Keep call luaeval("require('qf_helper').cmd_filter(unpack(_A))", [v:true, <line1>, <line2>])]]
+  )
+  vim.cmd(
+    [[command! -buffer -range Reject call luaeval("require('qf_helper').cmd_filter(unpack(_A))", [v:false, <line1>, <line2>])]]
+  )
+
   if conf.default_options then
     vim.api.nvim_buf_set_option(0, "buflisted", false)
     vim.api.nvim_win_set_option(0, "relativenumber", false)
@@ -252,6 +259,36 @@ M._set_qf_defaults = function()
       { noremap = true, silent = true }
     )
   end
+end
+
+M.cmd_filter = function(keep, range_start, range_end)
+  local qftype = util.get_win_type()
+  if qftype == "" then
+    vim.api.nvim_err_writeln("Can only use :Keep and :Reject inside quickfix buffer")
+    return
+  end
+  local list = util.get_list(qftype)
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local newlist
+  local lnum = cursor[1]
+  if keep then
+    newlist = { unpack(list, range_start, range_end) }
+    lnum = cursor[1] - range_start + 1
+  else
+    newlist = {}
+    for i, item in ipairs(list) do
+      if i < range_start or i > range_end then
+        table.insert(newlist, item)
+      end
+    end
+    local delta = cursor[1] - range_start
+    if delta > 0 then
+      lnum = cursor[1] - delta
+    end
+  end
+  util.set_list(qftype, newlist)
+  lnum = math.min(math.max(1, lnum), #newlist)
+  vim.api.nvim_win_set_cursor(0, { lnum, cursor[2] })
 end
 
 return M

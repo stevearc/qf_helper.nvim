@@ -73,18 +73,20 @@ nnoremap <silent> <leader>l <cmd>LLToggle!<CR>
 ```
 
 ## Commands
-Command       | arg | description
--------       | --- | -----------
-`QNext[!]`    | N=1 | Go to next quickfix or loclist entry, choosing based on which is non-empty and which is open. Uses `prefer_loclist` option to tiebreak.
-`QPrev[!]`    | N=1 | Go to previous quickfix or loclist entry, choosing based on which is non-empty and which is open. Uses `prefer_loclist` option to tiebreak.
-`QFNext[!]`   | N=1 | Same as `cnext`, but wraps at the end of the list
-`QFPrev[!]`   | N=1 | Same as `cprev`, but wraps at the beginning of the list
-`LLNext[!]`   | N=1 | Same as `lnext`, but wraps at the end of the list
-`LLPrev[!]`   | N=1 | Same as `lprev`, but wraps at the beginning of the list
-`QFOpen[!]`   |     | Same as `copen`, but dynamically sizes the window. With `[!]` cursor stays in current window.
-`LLOpen[!]`   |     | Same as `lopen`, but dynamically sizes the window. With `[!]` cursor stays in current window.
-`QFToggle[!]` |     | Open or close the quickfix window. With `[!]` cursor stays in current window.
-`LLToggle[!]` |     | Open or close the loclist window. With `[!]` cursor stays in current window.
+Command       | arg     | description
+-------       | ---     | -----------
+`QNext[!]`    | N=1     | Go to next quickfix or loclist entry, choosing based on which is non-empty and which is open. Uses `prefer_loclist` option to tiebreak.
+`QPrev[!]`    | N=1     | Go to previous quickfix or loclist entry, choosing based on which is non-empty and which is open. Uses `prefer_loclist` option to tiebreak.
+`QFNext[!]`   | N=1     | Same as `cnext`, but wraps at the end of the list
+`QFPrev[!]`   | N=1     | Same as `cprev`, but wraps at the beginning of the list
+`LLNext[!]`   | N=1     | Same as `lnext`, but wraps at the end of the list
+`LLPrev[!]`   | N=1     | Same as `lprev`, but wraps at the beginning of the list
+`QFOpen[!]`   |         | Same as `copen`, but dynamically sizes the window. With `[!]` cursor stays in current window.
+`LLOpen[!]`   |         | Same as `lopen`, but dynamically sizes the window. With `[!]` cursor stays in current window.
+`QFToggle[!]` |         | Open or close the quickfix window. With `[!]` cursor stays in current window.
+`LLToggle[!]` |         | Open or close the loclist window. With `[!]` cursor stays in current window.
+`Keep`        | <range> | (In qf buffer) Keep the item or range of items, remove the rest
+`Reject`      | <range> | (In qf buffer) Remove the item or range of items
 
 ## Bindings
 When `default_bindings = true`, the following keybindings are set in the

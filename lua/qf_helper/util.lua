@@ -60,6 +60,14 @@ M.get_list = function(qftype)
   return qftype == "l" and vim.fn.getloclist(0) or vim.fn.getqflist()
 end
 
+M.set_list = function(qftype, items)
+  if qftype == "l" then
+    vim.fn.setloclist(0, items)
+  else
+    vim.fn.setqflist(items)
+  end
+end
+
 -- pos is 1-indexed, like nr in the quickfix
 M.get_pos = function(qftype)
   if qftype == "l" then
