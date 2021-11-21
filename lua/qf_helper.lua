@@ -166,6 +166,15 @@ M.navigate = function(steps, opts)
     vim.cmd("silent! " .. cmd .. opts.bang)
   end
   vim.cmd("normal! zv")
+
+  -- Print out current position after jumping if quickfix isn't open
+  if not util.is_open(active_list.qftype) then
+    local newpos = util.get_pos(active_list.qftype)
+    local text = active_list.list[newpos].text
+    text = string.gsub(text, "^%s*", "")
+    local line = string.format("(%d of %d) %s", newpos, #active_list.list, text)
+    vim.api.nvim_echo({ { line, nil } }, false, {})
+  end
 end
 
 M.update_qf_position = function(qftype)
