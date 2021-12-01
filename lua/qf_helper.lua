@@ -149,6 +149,9 @@ M.navigate = function(steps, opts)
       list = util.get_list(opts.qftype),
     }
   end
+  if vim.tbl_isempty(active_list.list) then
+    return
+  end
 
   local pos = util.get_pos(active_list.qftype) - 1 + steps
   if opts.by_file then
