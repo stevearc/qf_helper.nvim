@@ -116,6 +116,9 @@ M.open = function(qftype, opts)
     cmd = "botright " .. cmd
   end
   vim.cmd(cmd)
+  -- Repeat the open command. First command will open and enter, but the height
+  -- could be wrong b/c of autocmds. Second command will enforce the height.
+  vim.cmd(cmd)
   if not opts.enter then
     vim.api.nvim_set_current_win(winid)
   end
