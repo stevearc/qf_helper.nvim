@@ -52,10 +52,10 @@ local _set_pos = function(qftype, pos)
   end
   local conf = config[qftype]
   if conf.track_location == "cursor" then
-    local info = util.get_win_info(qftype)
-    if info then
-      vim.api.nvim_win_set_cursor(info.winid, { pos, 0 })
-      vim.api.nvim_win_set_option(info.winid, "cursorline", true)
+    local winid = util.get_winid(qftype)
+    if winid then
+      vim.api.nvim_win_set_cursor(winid, { pos, 0 })
+      vim.api.nvim_win_set_option(winid, "cursorline", true)
     end
   else
     local start_in_qf = util.get_win_type() == qftype

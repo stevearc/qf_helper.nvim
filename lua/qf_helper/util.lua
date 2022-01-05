@@ -14,17 +14,21 @@ M.get_win_type = function(winid)
 end
 
 M.is_open = function(qftype)
-  return M.get_win_info(qftype) ~= nil
+  return M.get_winid(qftype) ~= nil
 end
 
-M.get_win_info = function(qftype)
-  local ll = qftype == "l" and 1 or 0
-  for _, info in ipairs(vim.fn.getwininfo()) do
-    if info.quickfix == 1 and info.loclist == ll then
-      return info
-    end
+M.get_winid = function(qftype)
+  local winid
+  if qftype == "l" then
+    winid = vim.fn.getloclist(0, { winid = 0 }).winid
+  else
+    winid = vim.fn.getqflist({ winid = 0 }).winid
   end
-  return nil
+  if winid == 0 then
+    return nil
+  else
+    return winid
+  end
 end
 
 M.get_active_list = function()
