@@ -179,6 +179,12 @@ M.navigate = function(steps, opts)
     local text = active_list.list[newpos].text
     text = string.gsub(text, "^%s*", "")
     local line = string.format("(%d of %d) %s", newpos, #active_list.list, text)
+    if string.find(vim.o.shortmess, "a") then
+      local newline_idx = string.find(line, "\n")
+      if newline_idx then
+        line = string.sub(line, 1, newline_idx - 1)
+      end
+    end
     vim.api.nvim_echo({ { line, nil } }, false, {})
   end
 end
