@@ -115,7 +115,11 @@ M.open = function(qftype, opts)
   if qftype == "c" then
     cmd = "botright " .. cmd
   end
-  vim.cmd(cmd)
+  local ok, err = pcall(vim.cmd, cmd)
+  if not ok then
+    vim.api.nvim_err_writeln(err)
+    return
+  end
   -- Repeat the open command. First command will open and enter, but the height
   -- could be wrong b/c of autocmds. Second command will enforce the height.
   vim.cmd(cmd)
