@@ -98,10 +98,11 @@ M.open = function(qftype, opts)
     height = nil, -- explicitly override the height
   })
   local list = util.get_list(qftype)
-  if util.is_open(qftype) then
+  local list_winid = util.get_winid(qftype)
+  if list_winid then
     if opts.enter and util.get_win_type() ~= qftype then
       _set_pos(qftype, util.calculate_pos(qftype, list))
-      vim.cmd(qftype .. "open")
+      vim.api.nvim_set_current_win(list_winid)
     end
     return
   end
@@ -111,7 +112,7 @@ M.open = function(qftype, opts)
   end
   _set_pos(qftype, util.calculate_pos(qftype, list))
   local winid = vim.api.nvim_get_current_win()
-  local cmd = qftype .. "open " .. opts.height
+  local cmd = string.format("%sopen %d", qftype, opts.height)
   if qftype == "c" then
     cmd = "botright " .. cmd
   end
@@ -120,9 +121,8 @@ M.open = function(qftype, opts)
     vim.api.nvim_err_writeln(err)
     return
   end
-  -- Repeat the open command. First command will open and enter, but the height
-  -- could be wrong b/c of autocmds. Second command will enforce the height.
-  vim.cmd(cmd)
+  -- the height could be wrong b/c of autocmds
+  vim.api.nvim_win_set_height(0, opts.height)
   if not opts.enter then
     vim.api.nvim_set_current_win(winid)
   end
