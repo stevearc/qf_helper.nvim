@@ -1,0 +1,32 @@
+name: Run tests
+
+on: [push, pull_request]
+
+jobs:
+  luacheck:
+    name: Luacheck
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Prepare
+        run: |
+          sudo apt-get update
+          sudo add-apt-repository universe
+          sudo apt install luarocks -y
+          sudo luarocks install luacheck
+
+      - name: Run Luacheck
+        run: luacheck .
+
+  stylua:
+    name: StyLua
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Stylua
+        uses: JohnnyMorganz/stylua-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: v0.15.2
+          args: --check .
