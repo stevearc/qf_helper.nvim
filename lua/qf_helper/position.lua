@@ -12,41 +12,21 @@ M.update_qf_position = function(qftype)
       M.update_qf_position("c")
     end
   elseif util.is_open(qftype) then
-    M.set_pos(qftype, M.calculate_pos(qftype, util.get_list(qftype)))
+    local new_pos = M.calculate_pos(qftype, util.get_list(qftype))
+    M.set_pos(qftype, new_pos)
   end
 end
 
 -- pos is 1-indexed, like nr in the quickfix
 M.set_pos_immediate = function(qftype, pos)
-  if pos < 1 then
+  local conf = config[qftype]
+  if pos < 1 or not conf.track_location then
     return
   end
-  local conf = config[qftype]
-  if conf.track_location == "cursor" then
-    local winid = util.get_winid(qftype)
-    if winid then
-      vim.api.nvim_win_set_cursor(winid, { pos, 0 })
-      vim.api.nvim_win_set_option(winid, "cursorline", true)
-    end
-  else
-    local start_in_qf = util.get_win_type() == qftype
-    if start_in_qf then
-      -- If we're in the qf buffer, executing :cc will cause a nearby window to
-      -- jump to the qf location. In this case, we leave the qf window so we
-      -- *know* the window that jumps, so that we can restore its position
-      -- afterwards
-      vim.cmd("wincmd w")
-    end
-    local prev = vim.fn.winsaveview()
-    local bufnr = vim.api.nvim_get_current_buf()
-
-    vim.cmd("keepjumps silent " .. pos .. qftype .. qftype)
-
-    vim.api.nvim_set_current_buf(bufnr)
-    vim.fn.winrestview(prev)
-    if start_in_qf then
-      vim.cmd(qftype .. "open")
-    end
+  local winid = util.get_winid(qftype)
+  if winid then
+    vim.api.nvim_win_set_cursor(winid, { pos, 0 })
+    vim.api.nvim_win_set_option(winid, "cursorline", true)
   end
 end
 
@@ -73,9 +53,12 @@ M.get_pos = function(qftype)
   end
 end
 
--- pos is 1-indexed, like nr in the quickfix
+---pos is 1-indexed, like nr in the quickfix
+---@param qftype "c"|"l"
+---@param list table[]
+---@return integer
 M.calculate_pos = function(qftype, list)
-  if vim.api.nvim_buf_get_option(0, "buftype") ~= "" then
+  if vim.bo.buftype ~= "" then
     return -1
   end
   local bufnr = vim.api.nvim_get_current_buf()
@@ -89,7 +72,9 @@ M.calculate_pos = function(qftype, list)
   local seen_bufs = {}
   for i, entry in ipairs(list) do
     -- If we detect that the list isn't sorted, bail.
-    if entry.bufnr ~= prev_bufnr then
+    if prev_bufnr == -1 then
+      -- pass
+    elseif entry.bufnr ~= prev_bufnr then
       if seen_bufs[entry.bufnr] then
         return -1
       end
@@ -117,6 +102,7 @@ M.calculate_pos = function(qftype, list)
     end
     prev_lnum = entry.lnum
     prev_col = entry.col
+    prev_bufnr = entry.bufnr
   end
 
   if foundbuf then
