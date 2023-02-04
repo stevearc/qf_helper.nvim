@@ -1,11 +1,13 @@
 local config = require("qf_helper.config")
 local M = {}
 
+---@param winid nil|integer
+---@return nil|"c"|"l"
 M.get_win_type = function(winid)
   winid = winid or vim.api.nvim_get_current_win()
   local info = vim.fn.getwininfo(winid)[1]
   if info.quickfix == 0 then
-    return ""
+    return nil
   elseif info.loclist == 0 then
     return "c"
   else
@@ -13,10 +15,14 @@ M.get_win_type = function(winid)
   end
 end
 
+---@param qftype "c"|"l"
+---@return boolean
 M.is_open = function(qftype)
   return M.get_winid(qftype) ~= nil
 end
 
+---@param qftype "c"|"l"
+---@return nil|integer
 M.get_winid = function(qftype)
   local winid
   if qftype == "l" then
@@ -72,68 +78,28 @@ M.set_list = function(qftype, items)
   end
 end
 
--- pos is 1-indexed, like nr in the quickfix
-M.get_pos = function(qftype)
-  if qftype == "l" then
-    return vim.fn.getloclist(0, { idx = 0 }).idx
-  else
-    return vim.fn.getqflist({ idx = 0 }).idx
+---@param bufnr integer
+---@param preferred_win nil|integer
+---@return nil|integer
+M.buf_get_win = function(bufnr, preferred_win)
+  if
+    preferred_win
+    and vim.api.nvim_win_is_valid(preferred_win)
+    and vim.api.nvim_win_get_buf(preferred_win) == bufnr
+  then
+    return preferred_win
   end
-end
-
--- pos is 1-indexed, like nr in the quickfix
-M.calculate_pos = function(qftype, list)
-  if vim.api.nvim_buf_get_option(0, "buftype") ~= "" then
-    return -1
-  end
-  local bufnr = vim.api.nvim_get_current_buf()
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local foundbuf = false
-  local foundline = false
-  local prev_lnum = -1
-  local prev_col = -1
-  local prev_bufnr = -1
-  local ret = -1
-  local seen_bufs = {}
-  for i, entry in ipairs(list) do
-    -- If we detect that the list isn't sorted, bail.
-    if entry.bufnr ~= prev_bufnr then
-      if seen_bufs[entry.bufnr] then
-        return -1
-      end
-      seen_bufs[entry.bufnr] = true
-      prev_lnum = -1
-      prev_col = -1
-    elseif entry.lnum < prev_lnum then
-      return -1
-    elseif entry.lnum == prev_lnum and entry.col < prev_col then
-      return -1
+  for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.api.nvim_win_is_valid(winid) and vim.api.nvim_win_get_buf(winid) == bufnr then
+      return winid
     end
-
-    if ret > 0 then
-      -- pass
-    elseif bufnr == entry.bufnr then
-      if entry.lnum == cursor[1] then
-        if entry.col > 1 + cursor[2] then
-          ret = foundline and i - 1 or i
-        end
-        foundline = true
-      elseif entry.lnum > cursor[1] then
-        ret = math.max(1, foundbuf and i - 1 or i)
-      end
-      foundbuf = true
-    elseif foundbuf then
-      ret = i - 1
+  end
+  for _, winid in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_is_valid(winid) and vim.api.nvim_win_get_buf(winid) == bufnr then
+      return winid
     end
-    prev_lnum = entry.lnum
-    prev_col = entry.col
   end
-
-  if foundbuf then
-    return ret == -1 and vim.tbl_count(list) or ret
-  else
-    return M.get_pos(qftype)
-  end
+  return nil
 end
 
 return M

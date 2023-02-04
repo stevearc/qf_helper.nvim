@@ -1,5 +1,7 @@
+local M = {}
+
 -- stylua: ignore
-local Config = {
+local default_options = {
   prefer_loclist = true,       -- Used for QNext/QPrev (see Commands below)
   sort_lsp_diagnostics = true, -- Sort LSP diagnostic results
   quickfix = {
@@ -21,14 +23,15 @@ local Config = {
   },
 }
 
-function Config:update(opts)
-  local merged = vim.tbl_deep_extend("keep", opts or {}, self)
-  for k, v in pairs(merged) do
-    self[k] = v
+---@param opts nil|table
+function M.update(opts)
+  local new_conf = vim.tbl_deep_extend("keep", opts or {}, default_options)
+  for k, v in pairs(new_conf) do
+    M[k] = v
   end
 end
 
-setmetatable(Config, {
+setmetatable(M, {
   __index = function(t, k)
     if k == "l" then
       k = "loclist"
@@ -39,4 +42,4 @@ setmetatable(Config, {
   end,
 })
 
-return Config
+return M
