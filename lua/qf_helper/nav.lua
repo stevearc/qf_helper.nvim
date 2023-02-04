@@ -29,7 +29,6 @@ M.jump = function(steps, opts)
     return
   end
 
-  local pos = position.get_pos(active_list.qftype) - 1 + steps
   if opts.by_file then
     vim.cmd({
       cmd = active_list.qftype .. (steps < 0 and "p" or "n") .. "f",
@@ -37,10 +36,25 @@ M.jump = function(steps, opts)
       mods = { emsg_silent = true },
     })
   else
-    if opts.wrap then
-      pos = pos % vim.tbl_count(active_list.list)
+    local pos = position.get_pos(active_list.qftype)
+    local cur_entry = active_list.list[pos]
+
+    local filtered_list = util.filter_qf(function(e)
+      return e.valid == 1 and e.lnum > 0
+    end, active_list.list)
+    local effective_pos = util.tbl_index(filtered_list, cur_entry)
+    if effective_pos then
+      if opts.wrap then
+        effective_pos = ((effective_pos - 1 + steps) % vim.tbl_count(filtered_list)) + 1
+      end
+      pos = filtered_list[effective_pos].qf_pos
+    else
+      pos = pos + steps
+      if opts.wrap then
+        pos = ((pos - 1) % vim.tbl_count(active_list.list)) + 1
+      end
     end
-    pos = pos + 1
+
     vim.cmd({ cmd = active_list.qftype:rep(2), bang = opts.bang, count = pos, mods = {
       emsg_silent = true,
     } })

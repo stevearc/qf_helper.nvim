@@ -30,18 +30,17 @@ M.set_pos_immediate = function(qftype, pos)
   end
 end
 
-local debounce_idx = 0
+local timer
 M.set_pos = function(qftype, pos)
-  debounce_idx = debounce_idx + 1
-  if M.get_pos(qftype) == pos then
-    return
+  if timer then
+    timer:close()
   end
-  local idx = debounce_idx
-  vim.defer_fn(function()
-    if idx == debounce_idx then
-      M.set_pos_immediate(qftype, pos)
-    end
-  end, 10)
+  timer = vim.loop.new_timer()
+  timer:start(10, 0, function()
+    timer:close()
+    timer = nil
+    vim.schedule_wrap(M.set_pos_immediate)(qftype, pos)
+  end)
 end
 
 -- pos is 1-indexed, like nr in the quickfix
@@ -62,54 +61,34 @@ M.calculate_pos = function(qftype, list)
     return -1
   end
   local bufnr = vim.api.nvim_get_current_buf()
+  local filtered_list = util.filter_qf(function(e)
+    return e.valid == 1 and e.bufnr == bufnr and e.lnum > 0
+  end, list)
+  if vim.tbl_isempty(filtered_list) then
+    return -1
+  end
   local cursor = vim.api.nvim_win_get_cursor(0)
-  local foundbuf = false
-  local foundline = false
   local prev_lnum = -1
   local prev_col = -1
-  local prev_bufnr = -1
-  local ret = -1
-  local seen_bufs = {}
-  for i, entry in ipairs(list) do
+  local ret = filtered_list[1].qf_pos
+  for _, entry in ipairs(filtered_list) do
     -- If we detect that the list isn't sorted, bail.
-    if prev_bufnr == -1 then
+    if prev_lnum == -1 then
       -- pass
-    elseif entry.bufnr ~= prev_bufnr then
-      if seen_bufs[entry.bufnr] then
-        return -1
-      end
-      seen_bufs[entry.bufnr] = true
     elseif entry.lnum < prev_lnum then
       return -1
     elseif entry.lnum == prev_lnum and entry.col < prev_col then
       return -1
     end
 
-    if ret > 0 then
-      -- pass
-    elseif bufnr == entry.bufnr then
-      if entry.lnum == cursor[1] then
-        if entry.col > 1 + cursor[2] then
-          ret = foundline and i - 1 or i
-        end
-        foundline = true
-      elseif entry.lnum > cursor[1] then
-        ret = math.max(1, foundbuf and i - 1 or i)
-      end
-      foundbuf = true
-    elseif foundbuf then
-      ret = i - 1
+    if cursor[1] > entry.lnum or (cursor[1] == entry.lnum and cursor[2] + 1 >= entry.col) then
+      ret = entry.qf_pos
     end
     prev_lnum = entry.lnum
     prev_col = entry.col
-    prev_bufnr = entry.bufnr
   end
 
-  if foundbuf then
-    return ret == -1 and vim.tbl_count(list) or ret
-  else
-    return M.get_pos(qftype)
-  end
+  return ret
 end
 
 return M

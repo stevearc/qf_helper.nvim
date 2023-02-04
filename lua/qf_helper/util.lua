@@ -66,6 +66,41 @@ M.get_active_list = function()
   return config.prefer_loclist and lret or cret
 end
 
+---@generic T : any
+---@param fn fun(item: T): boolean
+---@param list T[]
+---@return T[]
+M.filter_qf = function(fn, list)
+  local filtered_list = {}
+  for i, entry in ipairs(list) do
+    if fn(entry) then
+      entry.qf_pos = i
+      table.insert(filtered_list, entry)
+    end
+  end
+  return filtered_list
+end
+
+---@generic T : any
+---@generic U : any
+---@param tbl T[]
+---@param needle U
+---@param extract? fun(item: T): U
+---@return number?
+M.tbl_index = function(tbl, needle, extract)
+  for i, v in ipairs(tbl) do
+    if extract then
+      if extract(v) == needle then
+        return i
+      end
+    else
+      if v == needle then
+        return i
+      end
+    end
+  end
+end
+
 M.get_list = function(qftype)
   return qftype == "l" and vim.fn.getloclist(0) or vim.fn.getqflist()
 end
