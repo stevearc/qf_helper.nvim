@@ -77,7 +77,7 @@ M.calculate_pos = function(qftype, list)
       -- pass
     elseif entry.lnum < prev_lnum then
       return -1
-    elseif entry.lnum == prev_lnum and entry.col < prev_col then
+    elseif entry.lnum == prev_lnum and entry.col <= prev_col then
       return -1
     end
 
