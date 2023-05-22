@@ -26,7 +26,7 @@ M.set_pos_immediate = function(qftype, pos)
   local winid = util.get_winid(qftype)
   if winid then
     vim.api.nvim_win_set_cursor(winid, { pos, 0 })
-    vim.api.nvim_win_set_option(winid, "cursorline", true)
+    vim.wo[winid].cursorline = true
   end
 end
 
