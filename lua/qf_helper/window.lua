@@ -20,8 +20,8 @@ M.set_qf_defaults = function(bufnr)
 
   if conf.default_options then
     vim.bo[bufnr].buflisted = false
-    vim.wo[winid].relativenumber = false
-    vim.wo[winid].winfixheight = true
+    vim.api.nvim_set_option_value("relativenumber", false, { scope = "local", win = winid })
+    vim.api.nvim_set_option_value("winfixheight", true, { scope = "local", win = winid })
   end
 
   if conf.default_bindings then

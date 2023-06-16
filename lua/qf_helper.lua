@@ -10,6 +10,10 @@ end
 
 ---@param opts nil|table
 M.setup = function(opts)
+  if vim.fn.has("nvim-0.8") == 0 then
+    vim.notify_once("qf_helper has dropped support for Neovim <0.8", vim.log.levels.ERROR)
+    return
+  end
   local config = require("qf_helper.config")
   config.update(opts)
 
