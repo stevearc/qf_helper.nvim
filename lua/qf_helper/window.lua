@@ -26,7 +26,12 @@ M.set_qf_defaults = function(bufnr)
 
   if conf.default_bindings then
     -- CTRL-t opens selection in new tab
-    vim.keymap.set("n", "<C-t>", "<C-W><CR><C-W>T", { desc = "Open entry in new tab", buffer = bufnr })
+    vim.keymap.set(
+      "n",
+      "<C-t>",
+      "<C-W><CR><C-W>T",
+      { desc = "Open entry in new tab", buffer = bufnr }
+    )
     -- CTRL-s opens selection in horizontal split
     vim.keymap.set("n", "<C-s>", function()
       require("qf_helper").open_split("split")
@@ -38,9 +43,19 @@ M.set_qf_defaults = function(bufnr)
     -- p jumps without leaving quickfix
     vim.keymap.set("n", "<C-p>", "<CR><C-W>p", { desc = "Preview entry", buffer = bufnr })
     -- <C-k> scrolls up and jumps without leaving quickfix
-    vim.keymap.set("n", "<C-k>", "k<CR><C-W>p", { desc = "Move cursor up and preview entry", buffer = bufnr })
+    vim.keymap.set(
+      "n",
+      "<C-k>",
+      "k<CR><C-W>p",
+      { desc = "Move cursor up and preview entry", buffer = bufnr }
+    )
     -- <C-j> scrolls down and jumps without leaving quickfix
-    vim.keymap.set("n", "<C-j>", "j<CR><C-W>p", { desc = "Move cursor down and preview entry", buffer = bufnr })
+    vim.keymap.set(
+      "n",
+      "<C-j>",
+      "j<CR><C-W>p",
+      { desc = "Move cursor down and preview entry", buffer = bufnr }
+    )
     -- { and } navigates up and down by file
     vim.keymap.set("n", "{", function()
       local qfwin = vim.api.nvim_get_current_win()

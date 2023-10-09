@@ -55,9 +55,14 @@ M.jump = function(steps, opts)
       end
     end
 
-    vim.cmd({ cmd = active_list.qftype:rep(2), bang = opts.bang, count = pos, mods = {
-      emsg_silent = true,
-    } })
+    vim.cmd({
+      cmd = active_list.qftype:rep(2),
+      bang = opts.bang,
+      count = pos,
+      mods = {
+        emsg_silent = true,
+      },
+    })
   end
   vim.cmd("normal! zv")
 
