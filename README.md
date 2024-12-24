@@ -1,5 +1,8 @@
 # qf_helper.nvim
 
+> [!CAUTION]
+> This plugin is deprecated. It is recommended to use [quicker.nvim](https://github.com/stevearc/quicker.nvim) instead.
+
 A collection of improvements for neovim quickfix.
 
 The goal of this plugin is to be **small** and **unobtrusive**. It should make
